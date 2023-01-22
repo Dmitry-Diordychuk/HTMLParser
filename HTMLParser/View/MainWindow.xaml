@@ -3,9 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:HTMLParser.View"
+        xmlns:model="clr-namespace:HTMLParser.Model"
+        xmlns:viewModel="clr-namespace:HTMLParser.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="800">
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel></viewModel:MainWindowViewModel>
+    </Window.DataContext>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -14,6 +20,33 @@
                 <MenuItem Header="Insert HTML From Clipboard"></MenuItem>
             </MenuItem>
         </Menu>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <ItemsControl x:Name="HtmlPath" ItemsSource="{Binding HtmlPath}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- <Button Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}, -->
+                        <!--                           Path=DataContext.RemoveHtmlElementCommand}" CommandParameter="{Binding}"> -->
+                        <Button Command="{Binding ElementName=HtmlPath, Path=DataContext.RemoveHtmlElementCommand}" CommandParameter="{Binding}">
+                            <TextBlock Text="{Binding }"/>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <ComboBox x:Name="ElementComboBox" SelectedItem="{Binding SelectedElement}" >
+                <model:HtmlElement Name="a"></model:HtmlElement>
+                <model:HtmlElement Name="p"></model:HtmlElement>
+                <model:HtmlElement Name="div"></model:HtmlElement>
+            </ComboBox>
+            <ComboBox x:Name="AttributeComboBox" SelectedItem="{Binding SelectedAttribute}">
+                <model:HtmlAttribute Name="href"></model:HtmlAttribute>
+            </ComboBox>
+            <Button>Parse</Button>
+        </StackPanel>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
@@ -35,9 +68,7 @@
                 <TextBlock>Ссылка 2</TextBlock>
                 <TextBlock>Ссылка 3</TextBlock>
             </ListBox>
-            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                <TextBox></TextBox>
-            </StackPanel>
         </Grid>
+        
     </DockPanel>
 </Window>
